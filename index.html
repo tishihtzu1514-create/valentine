@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Will You Be My Valentine?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden}
+body{font-family:'Poppins',sans-serif;background:linear-gradient(180deg,#ffe4ec,#f7b7c9,#ffd1dc,#f3c4fb)}
+
+/* floating decor & images */
+.float{position:absolute;opacity:.9;pointer-events:none;animation:drift linear infinite}
+@keyframes drift{
+  0%{transform:translateY(110vh) translateX(0)}
+  100%{transform:translateY(-140vh) translateX(0)}
+}
+
+.container{position:relative;z-index:5;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:white;padding:30px}
+
+h1{font-family:'Playfair Display',serif;font-size:3.9rem;font-weight:900;text-shadow:0 0 25px rgba(255,255,255,.7),0 0 55px rgba(255,182,193,.7);animation:heartbeat 2.8s ease-in-out infinite}
+@keyframes heartbeat{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
+.buttons{margin-top:40px;display:flex;gap:45px}
+button{padding:18px 58px;font-size:1.6rem;border-radius:60px;border:none;cursor:pointer;font-weight:700;transition:all .25s ease}
+#yesBtn,#noBtn{background:white;color:#ff2d55;box-shadow:0 20px 45px rgba(255,255,255,.45)}
+#yesBtn:hover,#noBtn:hover{transform:scale(1.1)}
+
+.result{margin-top:40px;font-size:1.6rem;max-width:900px;font-weight:900;text-shadow:0 0 20px rgba(255,255,255,.6)}
+
+.images{display:flex;gap:30px;justify-content:center;margin-top:25px}
+.images img{width:220px;border-radius:26px;box-shadow:0 25px 55px rgba(0,0,0,.35)}
+
+audio{display:none}
+@media (min-width:768px) and (max-width:1024px){h1{font-size:4.4rem}}
+</style>
+</head>
+<body>
+
+<script>
+// initial floating emojis
+const decorIcons=['❤️','💖','💘','💕','🌹','🎀','🎀','🌸','🎀'];
+for(let i=0;i<70;i++){
+  const el=document.createElement('div');
+  el.className='float';
+  el.textContent=decorIcons[Math.floor(Math.random()*decorIcons.length)];
+  el.style.left=Math.random()*100+'vw';
+  el.style.fontSize=22+Math.random()*40+'px';
+  el.style.animationDuration=22+Math.random()*18+'s';
+  el.style.animationDelay=Math.random()*10+'s';
+  document.body.appendChild(el);
+}
+</script>
+
+<div class="container">
+  <h1 id="question">Will you be my Valentine? 💕</h1>
+  <div class="buttons" id="buttons">
+    <button id="yesBtn">Yes 💖</button>
+    <button id="noBtn">No</button>
+  </div>
+
+  <div class="images" id="images"></div>
+  <div class="result" id="result"></div>
+</div>
+
+<audio id="music" loop>
+  <source src="titanic.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const yesBtn=document.getElementById('yesBtn');
+const noBtn=document.getElementById('noBtn');
+const result=document.getElementById('result');
+const images=document.getElementById('images');
+const music=document.getElementById('music');
+const question=document.getElementById('question');
+const buttons=document.getElementById('buttons');
+
+function spawnFloatingPhotos(){
+  const max=56;
+  const cols=7;                 // spacing columns
+  const gap=100/cols;           // vw gap
+  let index=0;
+
+  for(let i=1;i<=max;i++){
+    const test=new Image();
+    test.src=`./no${i}.jpeg`;
+    test.onload=()=>{
+      const img=document.createElement('img');
+      img.src=test.src;
+      img.className='float';
+
+      const col=index%cols;
+      const baseLeft=col*gap+gap/2;
+
+      img.style.left=baseLeft+'vw';
+      img.style.width=80+Math.random()*70+'px';
+      img.style.animationDuration=30+Math.random()*20+'s';
+      img.style.animationDelay=(index*0.8)+'s';
+      img.style.borderRadius='22px';
+      img.style.boxShadow='0 18px 40px rgba(0,0,0,.35)';
+
+      document.body.appendChild(img);
+      index++;
+    };
+  }
+}
+
+// YES
+yesBtn.onclick=()=>{
+  question.remove();
+  buttons.remove();
+  images.innerHTML='';
+  result.innerHTML='thankk youu for being my valentine for 3years srtaightt ❤️<br>many goofy years ahead, for us to do silly shit';
+  music.play();
+  spawnFloatingPhotos();
+};
+
+// NO
+function moveNo(){
+  if(question) question.remove();
+  images.innerHTML='<img src="./no2.jpeg"><img src="./no3.jpeg">';
+  result.innerHTML='say yes or your these mfs are going to disappear tonight';
+  const x=Math.random()*(window.innerWidth-noBtn.offsetWidth);
+  const y=Math.random()*(window.innerHeight-noBtn.offsetHeight);
+  noBtn.style.position='absolute';
+  noBtn.style.left=x+'px';
+  noBtn.style.top=y+'px';
+}
+noBtn.addEventListener('mouseover',moveNo);
+noBtn.addEventListener('click',moveNo);
+</script>
+
+</body>
+</html>
